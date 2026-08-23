@@ -9,13 +9,27 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -58,13 +72,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             var currentScreen by remember { mutableStateOf("home") }
 
-            if (currentScreen == "home") {
-                SampleScreen(onNavigate = { currentScreen = it })
-            } else if (currentScreen == "benchmark") {
-                BenchmarkScreen(onBack = { currentScreen = "home" })
-            } else {
-                FeatureDetailScreen(feature = currentScreen, onBack = { currentScreen = "home" })
-            }
+	        when (currentScreen) {
+		        "home" -> {
+			        SampleScreen(onNavigate = { currentScreen = it })
+		        }
+		        "benchmark" -> {
+			        BenchmarkScreen(onBack = { currentScreen = "home" })
+		        }
+		        else -> {
+			        FeatureDetailScreen(feature = currentScreen, onBack = { currentScreen = "home" })
+		        }
+	        }
         }
     }
 
@@ -130,13 +148,13 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp)) // Reduced spacer
+            Spacer(modifier = Modifier.height(8.dp)) // Further reduced spacer
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
-                contentPadding = PaddingValues(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(64.dp), 
+                verticalArrangement = Arrangement.spacedBy(20.dp), // Significantly reduced vertical spacing
                 modifier = Modifier.fillMaxWidth().weight(1f, fill = false)
             ) {
                 items(items) { item ->
