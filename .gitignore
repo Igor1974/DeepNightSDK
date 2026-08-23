@@ -1,0 +1,15 @@
+*.iml
+.gradle
+/local.properties
+/.idea/
+.DS_Store
+build/
+*/build/
+captures/
+.externalNativeBuild
+.cxx
+local.properties
+*.jks
+*.keystore
+# keep the release folder for pre-built binaries
+!release/
