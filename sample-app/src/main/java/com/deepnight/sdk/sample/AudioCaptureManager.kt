@@ -25,27 +25,6 @@ class AudioCaptureManager {
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    private var isSimulating = false
-
-    fun startSimulation() {
-        if (captureJob != null) stopCapture()
-        isSimulating = true
-        captureJob = scope.launch {
-            val currentMagnitudes = FloatArray(32)
-            var phase = 0f
-            while (isActive) {
-                for (i in 0 until 32) {
-                    val target = (0.2f + 0.5f * kotlin.math.sin(phase + i * 0.3f) + (java.util.Random().nextFloat() * 0.3f)).coerceIn(0.1f, 0.9f)
-                    currentMagnitudes[i] = target
-                }
-                _magnitudes.value = currentMagnitudes.copyOf()
-                _isVoiceActive.value = currentMagnitudes.maxOrNull() ?: 0f > 0.5f
-                phase += 0.2f
-                delay(50)
-            }
-        }
-    }
-
     @SuppressLint("MissingPermission")
     fun startCapture() {
         if (captureJob != null) return
