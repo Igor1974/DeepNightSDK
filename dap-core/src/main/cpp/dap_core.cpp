@@ -5,9 +5,7 @@
 #include <android/log.h>
 #include <algorithm>
 #include <chrono>
-
-#define TAG "DAP_CORE_NATIVE"
-#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, TAG, __VA_ARGS__)
+#include <random>
 
 extern "C" {
 
@@ -29,6 +27,10 @@ Java_com_deepnight_sdk_dap_DapNativeInterface_processFft(
         int samplesPerBand = size / bands;
         if (samplesPerBand <= 0) samplesPerBand = 1;
 
+        // Better random for simulation
+        static std::mt19937 gen(std::chrono::system_clock::now().time_since_epoch().count());
+        std::uniform_real_distribution<float> dist(0.0f, 0.1f);
+
         for (int b = 0; b < bands; b++) {
             float sum = 0.0f;
             int start = b * samplesPerBand;
@@ -45,7 +47,7 @@ Java_com_deepnight_sdk_dap_DapNativeInterface_processFft(
             float val = avg * (20.0f + (float)b * 0.8f);
 
             // Simulation of live environment noise if signal is low
-            if (val < 0.1f) val = 0.05f + (float)(rand() % 10) / 100.0f;
+            if (val < 0.1f) val = 0.05f + dist(gen);
 
             magnitudes[b] = std::min(val, 1.0f);
         }
