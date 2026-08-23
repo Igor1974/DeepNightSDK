@@ -29,6 +29,8 @@ We don't just claim speed—we prove it. Results from our built-in Benchmark too
 | **Audio Processing** (100k FFT) | 6777 ms | **< 0.01 ms** | **~6,700,000X** |
 | **Math / Calculations** | 176 ms | **< 0.01 ms** | **InfinityX** |
 
+![Benchmark Evidence](media/benchmark_results.png)
+
 > [!TIP]
 > Our C++ core uses aggressive `-O3` optimizations and `fast-math` to deliver performance that is physically impossible on a standard Java Virtual Machine.
 
