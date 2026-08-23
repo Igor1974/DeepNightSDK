@@ -103,16 +103,17 @@ class MainActivity : ComponentActivity() {
                             when (item) {
                                 "Benchmark" -> onNavigate("benchmark")
                                 "FFT Engine", "VAD" -> {
-                                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-                                        if (isVisualizerEnabled) {
-                                            audioManager.stopCapture()
-                                            isVisualizerEnabled = false
-                                        } else {
-                                            isVisualizerEnabled = true
-                                            audioManager.startCapture()
-                                        }
+                                    if (isVisualizerEnabled) {
+                                        audioManager.stopCapture()
+                                        isVisualizerEnabled = false
                                     } else {
-                                        permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                                        // Auto-start simulation in emulator, real mic on device if granted
+                                        if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                                            audioManager.startCapture()
+                                        } else {
+                                            audioManager.startSimulation()
+                                        }
+                                        isVisualizerEnabled = true
                                     }
                                 }
                                 else -> Toast.makeText(this@MainActivity, "Feature: $item", Toast.LENGTH_SHORT).show()

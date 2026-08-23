@@ -47,6 +47,8 @@ We don't just claim speed—we prove it. Results from our built-in Benchmark too
 - **Voice Activity Detection (VAD)**: Process audio only when speech is detected to save system resources.
 - **Unity Bridge**: Ready-to-use C# wrapper for game developers.
 
+![Live Audio Visualizer](media/visualizer_demo.png)
+
 ### 📝 Text & Search Tools
 - **Native Russian Stemming**: Fast morphology processing without object allocation overhead.
 - **Phonetic Matching**: Proprietary fuzzy matching (finds "Мстители" even if the user typed "Мститити").
