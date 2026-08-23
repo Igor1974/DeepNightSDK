@@ -2,11 +2,7 @@ package com.deepnight.sdk.sample
 
 import com.deepnight.sdk.dap.DapNativeInterface
 import com.deepnight.sdk.text.TextToolsNative
-import kotlin.math.abs
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.sqrt
-import kotlin.math.tan
+import kotlin.math.*
 import kotlin.system.measureNanoTime
 
 /**
@@ -19,7 +15,6 @@ object BenchmarkManager {
     fun runNativeFftBenchmark(iterations: Int = 100000): Result {
         var checksum: Long
         val totalNano = measureNanoTime {
-            // Processing happens in Native, returning checksum to prevent optimization
             checksum = DapNativeInterface.runFftBenchmark(iterations)
         }
         val totalMs = totalNano / 1_000_000.0
@@ -51,27 +46,34 @@ object BenchmarkManager {
         return Result(totalMs, ops.toLong(), (checksum * 100.0).toLong())
     }
 
-    fun runMathNativeBenchmark(iterations: Int = 1000000): Result {
-        var checksum: Long
-        val totalNano = measureNanoTime {
-            checksum = TextToolsNative.runHeavyBenchmark(iterations)
-        }
-        val totalMs = totalNano / 1_000_000.0
-        val ops = iterations / (totalMs / 1000.0)
-        return Result(totalMs, ops.toLong(), checksum)
+    /**
+     * NEW: Data Stream Benchmark (Bitwise operations)
+     */
+    fun runNativeDataBenchmark(sizeMb: Int = 2, iterations: Int = 5): Result {
+        val micros = DapNativeInterface.runDataBenchmark(sizeMb, iterations)
+        val ms = micros / 1000.0
+        val totalBytes = sizeMb * 1024L * 1024L * iterations
+        val ops = totalBytes / (ms / 1000.0)
+        return Result(ms, ops.toLong())
     }
 
-    fun runMathKotlinBenchmark(iterations: Int = 1000000): Result {
+    fun runKotlinDataBenchmark(sizeMb: Int = 2, iterations: Int = 5): Result {
+        val size = sizeMb * 1024 * 1024
+        val data = ByteArray(size) { 0xAA.toByte() }
+        
         val totalNano = measureNanoTime {
-            var dummy = 0.0
-            for (i in 0 until iterations) {
-                val x = i.toDouble() * 0.001
-                dummy += sin(x) * cos(x * 1.5) + sqrt(abs(tan(x * 0.5)))
-                if (dummy > 1e10) dummy = 0.0
+            repeat(iterations) {
+                for (i in 0 until size) {
+                    var val8 = data[i].toInt() and 0xFF
+                    val8 = ((val8 xor 0x55) + (val8 shl 1)) and 0xFF
+                    val8 = ((val8 shr 1) xor (val8 shl 3)) and 0xFF
+                    data[i] = val8.toByte()
+                }
             }
         }
         val totalMs = totalNano / 1_000_000.0
-        val ops = iterations / (totalMs / 1000.0)
+        val totalBytes = sizeMb * 1024L * 1024L * iterations
+        val ops = totalBytes / (totalMs / 1000.0)
         return Result(totalMs, ops.toLong())
     }
 }

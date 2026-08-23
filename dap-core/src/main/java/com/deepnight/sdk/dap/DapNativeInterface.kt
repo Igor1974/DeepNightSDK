@@ -40,4 +40,9 @@ object DapNativeInterface {
      * Runs honest FFT loops in C++ for benchmark. Returns checksum.
      */
     external fun runFftBenchmark(iterations: Int): Long
+
+    /**
+     * Runs high-performance bitwise data processing benchmark.
+     */
+    external fun runDataBenchmark(sizeMb: Int, iterations: Int): Long
 }

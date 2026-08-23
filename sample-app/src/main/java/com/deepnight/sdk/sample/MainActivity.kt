@@ -66,11 +66,20 @@ class MainActivity : ComponentActivity() {
                     Toast.makeText(this, "LONG PRESS BACK: Showing Recents (Simulated)", Toast.LENGTH_LONG).show()
                 }
             },
-            onShortPress = { }
+            onShortPress = { 
+                // We let Compose BackHandler handle internal navigation.
+                // If it reaches here and it's BACK on HOME screen, we exit.
+            }
         )
 
         setContent {
             var currentScreen by remember { mutableStateOf("home") }
+
+            if (currentScreen != "home") {
+                androidx.activity.compose.BackHandler {
+                    currentScreen = "home"
+                }
+            }
 
 	        when (currentScreen) {
 		        "home" -> {
