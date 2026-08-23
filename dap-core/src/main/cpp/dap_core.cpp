@@ -3,6 +3,8 @@
 #include <vector>
 #include <cmath>
 #include <android/log.h>
+#include <algorithm>
+#include <chrono>
 
 #define TAG "DAP_CORE_NATIVE"
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, TAG, __VA_ARGS__)
@@ -90,16 +92,16 @@ Java_com_deepnight_sdk_dap_DapNativeInterface_isVoiceActive(
     return energy > threshold;
 }
 
+/**
+ * HONEST BENCHMARK: Returns a checksum as long to prevent compiler optimization.
+ */
 JNIEXPORT jlong JNICALL
 Java_com_deepnight_sdk_dap_DapNativeInterface_runFftBenchmark(JNIEnv *env, jobject thiz, jint iterations) {
-    auto start = std::chrono::high_resolution_clock::now();
-
     const int bufferSize = 1024;
     float audioData[bufferSize];
-    float magnitudes[32];
     for (int i = 0; i < bufferSize; i++) audioData[i] = std::sin(i * 0.1f);
 
-    float sumTotal = 0.0f;
+    float checksum = 0.0f;
     for (int it = 0; it < iterations; it++) {
         float* ptr = audioData;
         for (int b = 0; b < 32; b++) {
@@ -108,17 +110,12 @@ Java_com_deepnight_sdk_dap_DapNativeInterface_runFftBenchmark(JNIEnv *env, jobje
                 float v = *ptr++;
                 sum += std::sqrt(std::abs(v * std::cos(v)));
             }
-            magnitudes[b] = sum * 0.03125f;
-            sumTotal += magnitudes[b]; // Use the result to prevent loop optimization
+            checksum += sum * 0.03125f;
         }
-        // Force memory barrier or dummy check
-        if (sumTotal > 1e15f) sumTotal = 0.0f;
+        audioData[it % bufferSize] += 0.001f;
     }
 
-    auto end = std::chrono::high_resolution_clock::now();
-    auto diff = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-    // Return result encoded in the long to ensure it's not optimized away
-    return (diff == 0) ? 1 : diff;
+    return (jlong)(checksum * 100.0f);
 }
 
 }

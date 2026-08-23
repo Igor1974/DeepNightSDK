@@ -10,19 +10,23 @@ import kotlin.system.measureNanoTime
  */
 object BenchmarkManager {
 
-    data class Result(val timeMs: Double, val opsPerSec: Long)
+    data class Result(val timeMs: Double, val opsPerSec: Long, val checksum: Long = 0)
 
-    fun runNativeFftBenchmark(iterations: Int = 500000): Result {
-        val micros = DapNativeInterface.runFftBenchmark(iterations)
-        val ms = micros / 1000.0
-        val ops = iterations / (ms / 1000.0)
-        return Result(ms, ops.toLong())
+    fun runNativeFftBenchmark(iterations: Int = 100000): Result {
+        var checksum: Long
+        val totalNano = measureNanoTime {
+            // Processing happens in Native, returning checksum to prevent optimization
+            checksum = DapNativeInterface.runFftBenchmark(iterations)
+        }
+        val totalMs = totalNano / 1_000_000.0
+        val ops = iterations / (totalMs / 1000.0)
+        return Result(totalMs, ops.toLong(), checksum)
     }
 
-    fun runKotlinFftBenchmark(iterations: Int = 500000): Result {
+    fun runKotlinFftBenchmark(iterations: Int = 100000): Result {
         val bufferSize = 1024
         val audioData = FloatArray(bufferSize) { sin(it * 0.1f) }
-        val magnitudes = FloatArray(32)
+        var checksum = 0.0
         
         val totalNano = measureNanoTime {
             repeat(iterations) {
@@ -33,23 +37,26 @@ object BenchmarkManager {
                         val v = audioData[idx++]
                         sum += sqrt(abs(v * cos(v)))
                     }
-                    magnitudes[b] = sum * 0.03125f
+                    checksum += sum * 0.03125f
                 }
+                audioData[iterations % bufferSize] += 0.001f
             }
+        }
+        val totalMs = totalNano / 1_000_000.0
+        val ops = iterations / (totalMs / 1000.0)
+        return Result(totalMs, ops.toLong(), (checksum * 100.0).toLong())
+    }
+
+    fun runMathNativeBenchmark(iterations: Int = 1000000): Result {
+        val totalNano = measureNanoTime {
+            TextToolsNative.runHeavyBenchmark(iterations)
         }
         val totalMs = totalNano / 1_000_000.0
         val ops = iterations / (totalMs / 1000.0)
         return Result(totalMs, ops.toLong())
     }
 
-    fun runMathNativeBenchmark(iterations: Int = 5000000): Result {
-        val micros = TextToolsNative.runHeavyBenchmark(iterations)
-        val ms = micros / 1000.0
-        val ops = iterations / (ms / 1000.0)
-        return Result(ms, ops.toLong())
-    }
-
-    fun runMathKotlinBenchmark(iterations: Int = 5000000): Result {
+    fun runMathKotlinBenchmark(iterations: Int = 1000000): Result {
         val totalNano = measureNanoTime {
             var dummy = 0.0
             for (i in 0 until iterations) {

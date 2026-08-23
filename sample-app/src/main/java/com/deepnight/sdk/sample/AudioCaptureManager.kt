@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * Manages audio capture and processing via DAP Core SDK.
+ * Optimized for compatibility with real TV hardware.
  */
 class AudioCaptureManager {
     private var audioRecord: AudioRecord? = null
@@ -23,24 +24,24 @@ class AudioCaptureManager {
     private val _isVoiceActive = MutableStateFlow(false)
     val isVoiceActive = _isVoiceActive.asStateFlow()
 
+    private val _micStatus = MutableStateFlow("Idle")
+    val micStatus = _micStatus.asStateFlow()
+
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     fun startSimulation() {
         if (captureJob != null) stopCapture()
+        _micStatus.value = "Simulation"
         captureJob = scope.launch {
             val audioData = ByteArray(1024)
             val currentMagnitudes = FloatArray(32)
             var phase = 0f
-            
             while (isActive) {
-                // Generate more energetic synthetic wave
                 for (i in audioData.indices) {
                     val sample = (128 + 90 * kotlin.math.sin(phase + i * 0.15f) + 40 * kotlin.math.sin(phase * 0.7f + i * 0.08f)).toInt()
                     audioData[i] = sample.toByte()
                 }
-                
                 DapNativeInterface.processFft(audioData, audioData.size, currentMagnitudes)
-                
                 _magnitudes.value = currentMagnitudes.copyOf()
                 _isVoiceActive.value = true
                 phase += 0.5f
@@ -57,46 +58,68 @@ class AudioCaptureManager {
         val bufferSize = AudioRecord.getMinBufferSize(
             sampleRate,
             AudioFormat.CHANNEL_IN_MONO,
-            AudioFormat.ENCODING_PCM_8BIT
+            AudioFormat.ENCODING_PCM_16BIT // Standard 16-bit for better TV support
         )
 
-        audioRecord = AudioRecord(
-            MediaRecorder.AudioSource.MIC,
-            sampleRate,
-            AudioFormat.CHANNEL_IN_MONO,
-            AudioFormat.ENCODING_PCM_8BIT,
-            bufferSize
-        )
-
-        if (audioRecord?.state != AudioRecord.STATE_INITIALIZED) {
-            Log.e("AudioCapture", "Failed to initialize AudioRecord")
+        if (bufferSize <= 0) {
+            _micStatus.value = "Error: Invalid buffer size"
             return
         }
 
-        audioRecord?.startRecording()
+        try {
+            audioRecord = AudioRecord(
+                MediaRecorder.AudioSource.VOICE_RECOGNITION, // Better for remotes
+                sampleRate,
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT,
+                bufferSize
+            )
 
-        captureJob = scope.launch {
-            val audioData = ByteArray(bufferSize)
-            val currentMagnitudes = FloatArray(32)
-
-            while (isActive) {
-                val read = audioRecord?.read(audioData, 0, bufferSize) ?: 0
-                if (read > 0) {
-                    DapNativeInterface.processFft(audioData, read, currentMagnitudes)
-                    _isVoiceActive.value = DapNativeInterface.isVoiceActive(audioData, read, 0.05f)
-                    _magnitudes.value = currentMagnitudes.copyOf()
-                }
-                delay(30)
+            if (audioRecord?.state != AudioRecord.STATE_INITIALIZED) {
+                _micStatus.value = "Error: Init failed"
+                audioRecord?.release()
+                audioRecord = null
+                return
             }
+
+            audioRecord?.startRecording()
+            _micStatus.value = "Hardware Mic Active"
+
+            captureJob = scope.launch {
+                val audioData = ShortArray(bufferSize / 2)
+                val byteBuffer = ByteArray(bufferSize / 2)
+                val currentMagnitudes = FloatArray(32)
+
+                while (isActive) {
+                    val read = audioRecord?.read(audioData, 0, audioData.size) ?: 0
+                    if (read > 0) {
+                        // Convert 16-bit PCM to 8-bit for our simplified FFT engine demo
+                        for (i in 0 until read) {
+                            byteBuffer[i] = ((audioData[i] + 32768) shr 8).toByte()
+                        }
+                        DapNativeInterface.processFft(byteBuffer, read, currentMagnitudes)
+                        _isVoiceActive.value = DapNativeInterface.isVoiceActive(byteBuffer, read, 0.05f)
+                        _magnitudes.value = currentMagnitudes.copyOf()
+                    }
+                    delay(30)
+                }
+            }
+        } catch (e: Exception) {
+            _micStatus.value = "Error: ${e.message}"
+            Log.e("AudioCapture", "Error starting capture", e)
         }
     }
 
     fun stopCapture() {
         captureJob?.cancel()
         captureJob = null
-        audioRecord?.stop()
-        audioRecord?.release()
+        try {
+            audioRecord?.stop()
+            audioRecord?.release()
+        } catch (_: Exception) {}
         audioRecord = null
+        _micStatus.value = "Idle"
         _magnitudes.value = FloatArray(32) { 0f }
+        _isVoiceActive.value = false
     }
 }

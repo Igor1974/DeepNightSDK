@@ -43,7 +43,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         
         commandRegistry = CommandRegistry(this)
-        // Sample commands
         commandRegistry.registerCommand("открой кино", "ACTION_OPEN_MOVIES")
         commandRegistry.registerCommand("выключи экран", "ACTION_SCREEN_OFF")
         
@@ -53,9 +52,7 @@ class MainActivity : ComponentActivity() {
                     Toast.makeText(this, "LONG PRESS BACK: Showing Recents (Simulated)", Toast.LENGTH_LONG).show()
                 }
             },
-            onShortPress = { 
-                // Default system back behavior usually handled by super
-            }
+            onShortPress = { }
         )
 
         setContent {
@@ -88,6 +85,7 @@ class MainActivity : ComponentActivity() {
         var isVisualizerEnabled by remember { mutableStateOf(false) }
         val magnitudes by audioManager.magnitudes.collectAsState()
         val isVoiceActive by audioManager.isVoiceActive.collectAsState()
+        val micStatus by audioManager.micStatus.collectAsState()
 
         val permissionLauncher = rememberLauncherForActivityResult(
             ActivityResultContracts.RequestPermission()
@@ -110,7 +108,7 @@ class MainActivity : ComponentActivity() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(text = "DeepNight SDK Premium Demo", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-            Text(text = "Try Long Press BACK for Recents Demo", color = Color.Gray, fontSize = 12.sp)
+            Text(text = "Mic Status: $micStatus", color = if (micStatus.contains("Error")) Color.Red else Color.Cyan, fontSize = 12.sp)
             
             Spacer(modifier = Modifier.height(16.dp))
 

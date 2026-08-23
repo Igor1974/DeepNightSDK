@@ -7,11 +7,7 @@ package com.deepnight.sdk.dap
 object DapNativeInterface {
     init {
         System.loadLibrary("dap-core")
-        /**
-     * Runs 10k FFT loops in C++ for benchmark.
-     */
-    external fun runFftBenchmark(iterations: Int): Long
-}
+    }
 
     /**
      * Processes raw audio data into frequency magnitudes.
@@ -39,8 +35,9 @@ object DapNativeInterface {
         size: Int,
         threshold: Float
     ): Boolean
+
     /**
-     * Runs 10k FFT loops in C++ for benchmark.
+     * Runs honest FFT loops in C++ for benchmark. Returns checksum.
      */
     external fun runFftBenchmark(iterations: Int): Long
 }
