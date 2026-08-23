@@ -14,22 +14,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 /**
- * Premium Multi-color Spectrum Visualizer for DeepNight SDK.
+ * Optimized Compact Spectrum Visualizer.
  */
 @Composable
 fun VisualizerView(magnitudes: FloatArray, isVoiceActive: Boolean) {
-    // Cyberpunk color palette
     val colors = listOf(
         Color(0xFF00FFFF), // Cyan
         Color(0xFF8A2BE2), // BlueViolet
         Color(0xFFFF00FF)  // Magenta
     )
-    
     val inactiveColor = Color.Gray.copy(alpha = 0.3f)
 
     Canvas(modifier = Modifier
         .fillMaxWidth()
-        .height(180.dp)
+        .height(110.dp) // Reduced height to fit one screen
         .padding(horizontal = 4.dp)) {
         
         val width = size.width
@@ -39,9 +37,8 @@ fun VisualizerView(magnitudes: FloatArray, isVoiceActive: Boolean) {
         val barWidth = (width - (gap * (barCount - 1))) / barCount
         
         magnitudes.forEachIndexed { index, magnitude ->
-            // Apply non-linear boost for visual impact
             val boostedMagnitude = kotlin.math.sqrt(magnitude.toDouble()).toFloat()
-            val barHeight = (boostedMagnitude * height * 0.95f).coerceIn(8f, height)
+            val barHeight = (boostedMagnitude * height * 0.9f).coerceIn(6f, height)
             val x = index * (barWidth + gap)
             
             drawRoundRect(

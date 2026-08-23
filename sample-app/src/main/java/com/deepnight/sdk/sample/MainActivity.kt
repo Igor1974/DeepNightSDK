@@ -104,39 +104,40 @@ class MainActivity : ComponentActivity() {
         }
 
         Column(
-            modifier = Modifier.fillMaxSize().padding(32.dp),
+            modifier = Modifier.fillMaxSize().padding(16.dp), // Reduced padding
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "DeepNight SDK Premium Demo", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-            Text(text = "Mic Status: $micStatus", color = if (micStatus.contains("Error")) Color.Red else Color.Cyan, fontSize = 12.sp)
+            Text(text = "DeepNight SDK Premium Demo", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text(text = "Mic Status: $micStatus", color = if (micStatus.contains("Error")) Color.Red else Color.Cyan, fontSize = 10.sp)
             
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(10.dp)) // Reduced spacer
 
             NeonGlowSurface(glowColor = if (isVoiceActive) Color.Cyan else Color.Gray) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(600.dp)) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(500.dp)) {
                     Text(
                         text = "Native Text Tools: ${TextToolsNative.stemWord("Программирование")}",
-                        color = Color.White
+                        color = Color.White,
+                        fontSize = 12.sp
                     )
                     if (isVisualizerEnabled) {
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         VisualizerView(magnitudes = magnitudes, isVoiceActive = isVoiceActive)
                     } else {
-                        Box(Modifier.height(150.dp).fillMaxWidth(), contentAlignment = Alignment.Center) {
-                            Text("Press 'FFT Engine' to start Visualizer", color = Color.DarkGray)
+                        Box(Modifier.height(110.dp).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                            Text("Press 'FFT Engine' to start Visualizer", color = Color.DarkGray, fontSize = 12.sp)
                         }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp)) // Reduced spacer
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
-                contentPadding = PaddingValues(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(24.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp),
-                modifier = Modifier.fillMaxWidth()
+                contentPadding = PaddingValues(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.fillMaxWidth().weight(1f, fill = false)
             ) {
                 items(items) { item ->
                     val fr = focusRegistry.get(item)
@@ -161,11 +162,11 @@ class MainActivity : ComponentActivity() {
                                 else -> Toast.makeText(this@MainActivity, "Feature: $item", Toast.LENGTH_SHORT).show()
                             }
                         },
-                        modifier = Modifier.height(100.dp),
+                        modifier = Modifier.height(85.dp), // Reduced height
                         focusRequester = fr
                     ) {
                         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                            Text(text = item, color = if (item == "FFT Engine" && isVisualizerEnabled) Color.Cyan else Color.White)
+                            Text(text = item, fontSize = 14.sp, color = if (item == "FFT Engine" && isVisualizerEnabled) Color.Cyan else Color.White)
                         }
                     }
                 }
