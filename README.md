@@ -88,7 +88,7 @@ DeepNight SDK uses a **Dual License** model:
     *   **Direct Technical Support** from the developer.
 
 **Contact for a custom quote:**
-Telegram: [@Igor1974](https://t.me/Igor1974) | [LICENSE FAQ](./LICENSE_FAQ.md)
+Telegram: [@Igor1974](https://t.me/Igor4pda) | [LICENSE FAQ](./LICENSE_FAQ.md)
 
 ---
 
