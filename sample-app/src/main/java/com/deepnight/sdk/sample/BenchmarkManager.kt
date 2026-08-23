@@ -2,7 +2,11 @@ package com.deepnight.sdk.sample
 
 import com.deepnight.sdk.dap.DapNativeInterface
 import com.deepnight.sdk.text.TextToolsNative
-import kotlin.math.*
+import kotlin.math.abs
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
+import kotlin.math.tan
 import kotlin.system.measureNanoTime
 
 /**
@@ -31,9 +35,9 @@ object BenchmarkManager {
         val totalNano = measureNanoTime {
             repeat(iterations) {
                 var idx = 0
-                for (b in 0 until 32) {
+                for (_b in 0 until 32) {
                     var sum = 0.0f
-                    for (j in 0 until 32) {
+                    for (_j in 0 until 32) {
                         val v = audioData[idx++]
                         sum += sqrt(abs(v * cos(v)))
                     }
@@ -48,12 +52,13 @@ object BenchmarkManager {
     }
 
     fun runMathNativeBenchmark(iterations: Int = 1000000): Result {
+        var checksum: Long
         val totalNano = measureNanoTime {
-            TextToolsNative.runHeavyBenchmark(iterations)
+            checksum = TextToolsNative.runHeavyBenchmark(iterations)
         }
         val totalMs = totalNano / 1_000_000.0
         val ops = iterations / (totalMs / 1000.0)
-        return Result(totalMs, ops.toLong())
+        return Result(totalMs, ops.toLong(), checksum)
     }
 
     fun runMathKotlinBenchmark(iterations: Int = 1000000): Result {
