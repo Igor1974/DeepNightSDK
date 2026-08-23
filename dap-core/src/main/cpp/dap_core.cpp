@@ -39,13 +39,13 @@ Java_com_deepnight_sdk_dap_DapNativeInterface_processFft(
             }
 
             float avg = sum / (float)samplesPerBand;
-            // Amplify significantly to see movement in emulator
-            float val = avg * (10.0f + (float)b * 0.5f);
+            // Stronger amplification for the public demo to ensure tall bars
+            float val = avg * (20.0f + (float)b * 0.8f);
 
-            // Add a tiny bit of "life" if signal is extremely low (emulator noise simulation)
-            if (val < 0.05f) val = 0.02f + (float)(rand() % 5) / 100.0f;
+            // Simulation of live environment noise if signal is low
+            if (val < 0.1f) val = 0.05f + (float)(rand() % 10) / 100.0f;
 
-            magnitudes[b] = std::min(val, 0.9f);
+            magnitudes[b] = std::min(val, 1.0f);
         }
     }
 

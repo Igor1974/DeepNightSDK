@@ -25,6 +25,30 @@ class AudioCaptureManager {
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
+    fun startSimulation() {
+        if (captureJob != null) stopCapture()
+        captureJob = scope.launch {
+            val audioData = ByteArray(1024)
+            val currentMagnitudes = FloatArray(32)
+            var phase = 0f
+            
+            while (isActive) {
+                // Generate more energetic synthetic wave
+                for (i in audioData.indices) {
+                    val sample = (128 + 90 * kotlin.math.sin(phase + i * 0.15f) + 40 * kotlin.math.sin(phase * 0.7f + i * 0.08f)).toInt()
+                    audioData[i] = sample.toByte()
+                }
+                
+                DapNativeInterface.processFft(audioData, audioData.size, currentMagnitudes)
+                
+                _magnitudes.value = currentMagnitudes.copyOf()
+                _isVoiceActive.value = true
+                phase += 0.5f
+                delay(40)
+            }
+        }
+    }
+
     @SuppressLint("MissingPermission")
     fun startCapture() {
         if (captureJob != null) return
@@ -58,12 +82,11 @@ class AudioCaptureManager {
             while (isActive) {
                 val read = audioRecord?.read(audioData, 0, bufferSize) ?: 0
                 if (read > 0) {
-                    // Process through DAP SDK
                     DapNativeInterface.processFft(audioData, read, currentMagnitudes)
                     _isVoiceActive.value = DapNativeInterface.isVoiceActive(audioData, read, 0.05f)
                     _magnitudes.value = currentMagnitudes.copyOf()
                 }
-                delay(30) // ~30 FPS UI update
+                delay(30)
             }
         }
     }

@@ -45,6 +45,7 @@ We don't just claim speed—we prove it. Results from our built-in Benchmark too
 ### 🎙 Advanced Audio (DAP Core)
 - **Low-Latency FFT**: High-resolution spectrum analysis in C++20.
 - **Voice Activity Detection (VAD)**: Process audio only when speech is detected to save system resources.
+- **AutoEQ**: Spectral balancing logic to normalize audio output.
 - **Unity Bridge**: Ready-to-use C# wrapper for game developers.
 
 ![Live Audio Visualizer](media/visualizer_demo.png)
@@ -53,6 +54,8 @@ We don't just claim speed—we prove it. Results from our built-in Benchmark too
 - **Native Russian Stemming**: Fast morphology processing without object allocation overhead.
 - **Phonetic Matching**: Proprietary fuzzy matching (finds "Мстители" even if the user typed "Мститити").
 - **Metadata Extraction**: Parse quality (4K, UHD) and year from titles automatically.
+
+![Text Tools Demo](media/text_tools_demo.png)
 
 ---
 
