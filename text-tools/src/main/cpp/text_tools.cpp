@@ -221,18 +221,18 @@ Java_com_deepnight_sdk_text_TextToolsNative_stemHugeBlock(JNIEnv *env, jobject t
     return env->NewStringUTF(output.str().c_str());
 }
 
+/**
+ * HONEST MATH BENCHMARK: Returns checksum to prevent loop removal.
+ */
 JNIEXPORT jlong JNICALL
 Java_com_deepnight_sdk_text_TextToolsNative_runHeavyBenchmark(JNIEnv *env, jobject thiz, jint iterations) {
-    auto start = std::chrono::high_resolution_clock::now();
-    double dummy = 0.0;
-    // More complex math to prevent easy JIT optimization
+    double checksum = 0.0;
     for (int i = 0; i < iterations; i++) {
-        double x = (double)i * 0.001;
-        dummy += std::sin(x) * std::cos(x * 1.5) + std::sqrt(std::abs(std::tan(x * 0.5)));
-        if (dummy > 1e10) dummy = 0.0; // Prevent overflow
+        double x = (double)i * 0.0001;
+        checksum += std::sin(x) * std::cos(x * 1.5) + std::sqrt(std::abs(std::tan(x * 0.5)));
+        if (checksum > 1e10) checksum = 0.0;
     }
-    auto end = std::chrono::high_resolution_clock::now();
-    return std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    return (jlong)(checksum * 100.0);
 }
 
 }

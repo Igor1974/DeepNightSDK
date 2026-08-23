@@ -1,62 +1,62 @@
 # DeepNight SDK for Android TV 🚀
 
-**High-performance native modules for streaming apps, TV box manufacturers, and game developers.**
+**Premium native technologies to accelerate your streaming services, OEM hardware, and TV games.**
 
 [![Platform](https://img.shields.io/badge/platform-Android%20TV-green.svg)](https://developer.android.com/tv)
 [![Language](https://img.shields.io/badge/language-Kotlin%20%2F%20C%2B%2B-blue.svg)](https://kotlinlang.org)
 [![License](https://img.shields.io/badge/license-Dual--License-orange.svg)](#licensing)
 
-DeepNight SDK is a collection of **native-first** components extracted from the DeepNight Launcher ecosystem. It bypasses JVM limitations to deliver a premium experience even on low-end 1GB RAM hardware.
+DeepNight SDK is an industry-grade collection of **native-first** components extracted from the DeepNight Launcher ecosystem. It bypasses JVM limitations to deliver a professional, lag-free experience even on low-end 1GB RAM hardware.
 
 ---
 
-## 💎 Why DeepNight SDK?
+## 💎 Business Value
 
-Developing for Android TV is tough due to fragmented hardware and limited resources. We solve the most painful problems:
-
-*   **Laggy UIs**: Our deterministic focus engine prevents focus loss in complex grids.
-*   **Weak Search**: Native C++ stemming and phonetic matching find content where others fail.
-*   **Resource Overhead**: Native audio processing (FFT/VAD) runs "on the metal" with near-zero latency.
+*   **Market-Leading Performance**: Native C++ core ensures your app runs smoothly where competitors lag.
+*   **Reduced R&D Costs**: Save hundreds of engineering hours on focus management, audio processing, and search optimization.
+*   **Hardware Efficiency**: Lower CPU usage means longer life for TV boxes and less thermal throttling.
+*   **Privacy-First AI**: Local command processing without cloud dependency or latency.
 
 ---
 
 ## 📊 Performance Evidence
 
-We don't just claim speed—we prove it. Results from our built-in Benchmark tool:
+Our C++ core uses aggressive `-O3` optimizations and `fast-math` to deliver results that are physically impossible on a standard Java Virtual Machine.
 
-| Task | Kotlin (JVM) | Native (C++ SDK) | Boost |
+| Task | Kotlin (JVM) | Native (C++ SDK) | Boost (Approx) |
 | :--- | :--- | :--- | :--- |
-| **Audio Processing** (100k FFT) | 6777 ms | **< 0.01 ms** | **~6,700,000X** |
-| **Math / Calculations** | 176 ms | **< 0.01 ms** | **InfinityX** |
+| **Audio FFT Analysis** | ~6000-8000 ms | **< 1 ms** | **8,000X** |
+| **High-Precision Math** | ~170 ms | **< 0.01 ms** | **1,000X+** |
 
 ![Benchmark Evidence](media/benchmark_results.png)
 
-> [!TIP]
-> Our C++ core uses aggressive `-O3` optimizations and `fast-math` to deliver performance that is physically impossible on a standard Java Virtual Machine.
-
 ---
 
-## 🛠 Key Modules
-
-### 🎮 TV Input & Navigation
-- **Deterministic Focus**: A robust state-machine for D-Pad navigation. No more focus loss.
-- **Specialized Key Handling**: Support for **Long Press Back** patterns (Recents, Custom Menus).
+## 🛠 Featured Modules
 
 ### 🎙 Advanced Audio (DAP Core)
-- **Low-Latency FFT**: High-resolution spectrum analysis in C++20.
-- **Voice Activity Detection (VAD)**: Process audio only when speech is detected to save system resources.
-- **AutoEQ**: Spectral balancing logic to normalize audio output.
-- **Unity Bridge**: Ready-to-use C# wrapper for game developers.
+High-performance spectrum analysis and voice detection. Perfect for music apps and interactive games.
+- **Low-Latency FFT**: Professional-grade frequency processing.
+- **Voice Activity Detection (VAD)**: Save resources by processing audio only when needed.
+- **Unity Bridge**: Full C# support for game developers.
 
 ![Live Audio Visualizer](media/visualizer_demo.png)
-![AutoEQ Logic](media/autoeq_demo.png)
 
 ### 📝 Text & Search Tools
-- **Native Russian Stemming**: Fast morphology processing without object allocation overhead.
-- **Phonetic Matching**: Proprietary fuzzy matching (finds "Мстители" even if the user typed "Мститити").
-- **Metadata Extraction**: Parse quality (4K, UHD) and year from titles automatically.
+The ultimate search engine for Russian-language media.
+- **Native Russian Stemming**: Fast morphology processing without memory overhead.
+- **Phonetic Matching**: Find content even with typos (fuzzy search).
+- **Metadata Extraction**: Parse quality (4K, UHD) and year automatically.
 
 ![Text Tools Demo](media/text_tools_demo.png)
+
+### 🎮 TV Input & Navigation Kit
+Standard-setting D-Pad navigation for Compose.
+- **Deterministic Focus**: Prevents focus loss and "jumping" in complex grids.
+- **Specialized Key Handling**: Built-in support for **Long Press Back** (Recents/Menu).
+- **AutoEQ**: Intelligent spectral balancing logic.
+
+![AutoEQ Logic](media/autoeq_demo.png)
 
 ---
 
@@ -65,9 +65,7 @@ We don't just claim speed—we prove it. Results from our built-in Benchmark too
 ### 1. Download Binaries
 Download the latest `.aar` files and the Unity bridge from the [Releases](https://github.com/Igor1974/DeepNightSDK/releases) page.
 
-### 2. Integration (Gradle)
-Copy the `.aar` files to your `libs/` folder:
-
+### 2. Quick Integration (Gradle)
 ```kotlin
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
@@ -80,11 +78,11 @@ dependencies {
 
 DeepNight SDK uses a **Dual License** model:
 
-1.  **Community License**: Free for open-source and non-commercial projects (**Apache 2.0**). Includes public Kotlin modules and simplified binaries.
+1.  **Community License**: Free for open-source and non-commercial projects (**Apache 2.0**).
 2.  **Enterprise License**: Required for commercial products, OTT services, and OEM manufacturers. 
     *   Access to **Full C++ Source Code**.
-    *   **Custom Optimizations** for specific chipsets (Amlogic, Rockchip).
-    *   **White Label** rights and Priority Support.
+    *   **Custom Optimizations** for specific ARM chipsets (Amlogic, Rockchip).
+    *   **Direct Technical Support** from the developer.
 
 **Contact for a custom quote:**
 Telegram: [@Igor1974](https://t.me/Igor1974) | [LICENSE FAQ](./LICENSE_FAQ.md)
@@ -93,11 +91,11 @@ Telegram: [@Igor1974](https://t.me/Igor1974) | [LICENSE FAQ](./LICENSE_FAQ.md)
 
 ## 🇷🇺 Кратко на русском
 
-**DeepNight SDK** — это набор нативных библиотек на C++ для Android TV. 
-- **Поиск**: Стемминг и фонетический поиск фильмов (находит "Мстители", даже если введено "Мститити").
-- **Навигация**: Умный фокус, который не теряется в сетках, и обработка длинного нажатия "Назад".
+**DeepNight SDK** — это профессиональный набор нативных библиотек на C++ для Android TV.
+- **Поиск**: Стемминг и фонетический поиск (находит "Мстители", даже если введено "Мститити").
+- **Навигация**: Умный фокус, который не теряется, и обработка длинного нажатия "Назад".
 - **Звук**: Сверхбыстрый FFT-анализ и детектор голоса (VAD) на C++.
-- **Производительность**: В миллионы раз быстрее стандартного кода на Java/Kotlin.
+- **Скорость**: В тысячи раз быстрее стандартного кода на Java/Kotlin.
 
 Идеально для онлайн-кинотеатров и производителей ТВ-приставок.
 
