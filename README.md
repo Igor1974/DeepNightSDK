@@ -19,16 +19,19 @@ DeepNight SDK is an industry-grade collection of **native-first** components ext
 
 ---
 
-## 📊 Performance Evidence
+## 📊 Performance Evidence (TCL P725 TV)
 
-Our C++ core uses aggressive `-O3` optimizations and `fast-math` to deliver results that are physically impossible on a standard Java Virtual Machine.
+Our C++ core uses aggressive `-O3` optimizations and direct memory access to deliver results that are impossible on a standard Java Virtual Machine. These are **real-world** results captured on a standard **TCL P725 (Android TV 11)**.
 
 | Task | Kotlin (JVM) | Native (C++ SDK) | Boost (Approx) |
 | :--- | :--- | :--- | :--- |
-| **Audio FFT Analysis** | ~6000-8000 ms | **< 1 ms** | **8,000X** |
-| **High-Precision Math** | ~170 ms | **< 0.01 ms** | **1,000X+** |
+| **DSP Signal Analysis** (100k FFT) | ~1400 ms | **~600 ms** | **2.3X** |
+| **Data Stream Processing** (10MB) | ~15 ms | **~3 ms** | **4.8X** |
 
 ![Benchmark Evidence](media/benchmark_results.png)
+
+> [!NOTE]
+> While a 2x-5x boost might seem modest compared to synthetic "loop-only" benchmarks, in a real-time 4K streaming environment, this performance gap is the difference between a smooth UI and dropped frames.
 
 ---
 
@@ -85,7 +88,7 @@ DeepNight SDK uses a **Dual License** model:
     *   **Direct Technical Support** from the developer.
 
 **Contact for a custom quote:**
-Telegram: [@Igor1974][https://t.me/Igor4pda] | [LICENSE FAQ](./LICENSE_FAQ.md)
+Telegram: [@Igor1974](https://t.me/Igor1974) | [LICENSE FAQ](./LICENSE_FAQ.md)
 
 ---
 
@@ -95,7 +98,7 @@ Telegram: [@Igor1974][https://t.me/Igor4pda] | [LICENSE FAQ](./LICENSE_FAQ.md)
 - **Поиск**: Стемминг и фонетический поиск (находит "Мстители", даже если введено "Мститити").
 - **Навигация**: Умный фокус, который не теряется, и обработка длинного нажатия "Назад".
 - **Звук**: Сверхбыстрый FFT-анализ и детектор голоса (VAD) на C++.
-- **Скорость**: В тысячи раз быстрее стандартного кода на Java/Kotlin.
+- **Скорость**: В 2-5 раз быстрее стандартного кода на Java/Kotlin на реальном ТВ железе.
 
 Идеально для онлайн-кинотеатров и производителей ТВ-приставок.
 
