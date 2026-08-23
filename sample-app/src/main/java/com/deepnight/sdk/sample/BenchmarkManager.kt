@@ -35,9 +35,9 @@ object BenchmarkManager {
         val totalNano = measureNanoTime {
             repeat(iterations) {
                 var idx = 0
-                for (_b in 0 until 32) {
+                repeat(32) {
                     var sum = 0.0f
-                    for (_j in 0 until 32) {
+                    repeat(32) {
                         val v = audioData[idx++]
                         sum += sqrt(abs(v * cos(v)))
                     }
